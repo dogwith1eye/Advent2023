@@ -14,9 +14,7 @@ def main():
         names=range(21),
         # names=range(6),
     )
-    df["History"] = df.apply(extrapolate_history, axis=1)
-    df["Previous"] = df.apply(lambda x: x["History"][0], axis=1)
-    df["Next"] = df.apply(lambda x: x["History"][1], axis=1)
+    df[["Previous", "Next"]] = df.apply(extrapolate_history, axis=1)
     write_file(df, "output.csv")
     previous = df["Previous"].sum()
     print(previous)
@@ -42,7 +40,7 @@ def extrapolate_history(row):
     ps = [0]
     for z in zs[1:]:
         ps.append(z - ps[-1])
-    return ps[-1], ns[-1]
+    return pd.Series([ps[-1], ns[-1]])
 
 
 def get_input_path():
